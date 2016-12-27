@@ -5,11 +5,30 @@
     <form class="" action="/signup" method="post">
       <%# Add form validations for:
       Username: Required. Must be more than 6 characters, must start with a letter, and no punctuation.
-      Password: Required. Must be more than 8 characters with atleast One letter, one number, and one special character (!?/.,')
+      author: Required. Must be more than 8 characters with atleast One letter, one number, and one special character (!?/.,')
       Email: Required. Must be formatted like an email, (something @ something . something)
       First Name: Required.
       Last Name: Required.
       Phone Number: Required. Must be a 10 digit number formatted like: 999-888-9898%>
+        <label for="username">User Name
+          <input type="text" name="username" value="<%= username %>" placeholder="username">
+        </label>
+        <label for="password">Password
+          <input type="text" name="password" value="<%= password %>" placeholder="password">
+        </label>
+        <label for="email">Email
+          <input type="text" name="email" value="<%= email %>" placeholder="email">
+        </label>
+        <label for="firstName">First Name
+          <input type="text" name="firstName" value="<%= firstName %>" placeholder="firstName">
+        </label>
+        <label for="lastName">Last Name
+          <input type="text" name="lastName" value="<%= lastName %>" placeholder="lastName">
+        </label>
+        <label for="phoneNumber">Phone Number
+          <input type="text" name="phoneNumber" value="<%= phoneNumber %>" placeholder="phoneNumber">
+        </label>
+        <button class="btn btn-primary" type="submit">Submit</button>
 
     </form>
 
