@@ -1,7 +1,7 @@
 <% include partials/header %>
 
 
-
+<div>
     <form class="" action="/signup" method="post">
       <%# Add form validations for:
       Username: Required. Must be more than 6 characters, must start with a letter, and no punctuation.
@@ -29,8 +29,29 @@
           <input type="text" name="phoneNumber" value="<%= phoneNumber %>" placeholder="phoneNumber">
         </label>
         <button class="btn btn-primary" type="submit">Submit</button>
-
     </form>
 
+        <% if(hasError) { %>
+          <div class="row">
+            <div class="col-md-6 errorBlock">
+              <% for(var item in error) { %>
+                <strong><h6><%= item %></h6></strong>
+                <ul>
+                <% for(var i = 0; i < error[item].length; i++) { %>
+                    <li>
+                      <i>
+                        <%= error[item][i].message %>
+                      </i>
+                    </li>
+                <% } %>
+                </ul>
+              <% } %>
+            </div>
+          </div>
+        <% } %>
 
+    <div class="col-md-2">
+
+    </div>
+</div>
 <% include partials/footer %>

@@ -22,7 +22,7 @@ router.get('/', function(req, res) {
 
 router.post('/', ev(validations.post), (req, res, next) => {
     req.body;
-    console.log("wtf");
+    //console.log("wtf");
     let postInfo = checkPost(req);
     // Handle rendering / redirecting here.
     // If there arent any validation errors, redirect to '/'
