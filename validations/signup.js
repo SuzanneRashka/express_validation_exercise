@@ -8,7 +8,7 @@ module.exports.post = {
             .label('Username')
             .required()
             .min(6)
-            .regex(/^[A-Za-z].*$/)
+            .regex(/^[A-z].*$/)
             .trim()
             .alphanum(),
 
@@ -40,4 +40,4 @@ module.exports.post = {
             .required()
 
     }
-}
+};

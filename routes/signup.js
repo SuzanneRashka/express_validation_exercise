@@ -11,7 +11,7 @@ const ev = require('express-validation');
 
 // Add form validations in /signup for:
 // Username: Required. Must be more than 6 characters, must start with a letter, and no punctuation.
-// Password: Required. Must be more than 8 characters with atleast One letter, one number, and one special character (!?/.,')//
+// Password: Required. Must be more than 8 characters with atleast One letter, one number, and one special character (!?/.,')
 // Email: Required. Must be formatted like an email, (something @ something . something)
 // First Name: Required.
 // Last Name: Required.
@@ -31,16 +31,91 @@ router.get('/', function(req, res) {
     });
 });
 
-router.post('/', ev(validations.post), function(req, res) {
+router.post('/', ev(validations.post), (req, res, next) => {
+    console.log(req.body);
+    console.log("wtf");
+    let postInfo = checkPost(req);
     // Handle rendering / redirecting here.
-
     // If there arent any validation errors, redirect to '/'
-
-    // If there are validation errors, re-render the signup page, injecting the users previous inputs.
-    res.render('signup', req.post);
-
+    if (!postInfo.hasError) {
+        res.redirect('/');
+    } else {
+        res.render('signup', postInfo);
+    }
 });
 
+//If there are validation errors, re-render the signup page, injecting the users previous inputs.
+//res.render('signup', req.post);
+
+
+
+
+// var postInfo = checkPost(req); // Run error checking.
+//
+// if (!postInfo.hasError) {
+//     // Validations passed -- Submit into database and redirect.
+//     res.redirect('/');
+// } else {
+//     res.render('add_post', postInfo);
+// }
+// });
+
+function checkPost(req) {
+    var info = {};
+    info.hasError = false;
+    info.error = {};
+
+    //Required Checks
+    checkRequired(info, req);
+
+    //Email Check
+    checkEmail(info, req);
+
+    return info;
+}
+
+function checkEmail(info, req) {
+    var str = req.body.email;
+    var atFound = false;
+    var dotFound = false;
+
+    for (var i = 1; i < str.length; i++) {
+        if (str[i] === '@' || atFound) {
+            if (atFound && str[i] === '.') {
+                //This email has an @ and dot in the right order.
+                dotFound = true;
+            }
+            atFound = true;
+        }
+    }
+
+    if (atFound && dotFound) {
+        info.email = req.body.email;
+    } else {
+        if (!info.error.email) {
+            info.error.email = [];
+        }
+        info.hasError = true;
+        info.error.email.push({
+            message: "email is malformed."
+        });
+    }
+}
+
+function checkRequired(info, req) {
+    for (var item in req.body) {
+        info[item] = req.body[item];
+        if (req.body[item].length <= 0) {
+            if (!info.error[item]) {
+                info.error[item] = [];
+            }
+            info.hasError = true;
+            info.error[item].push({
+                message: item + " is required."
+            });
+        }
+    }
+}
 
 // PRO-TIP: Write ALOT of functions to help you handle each little piece.
 
