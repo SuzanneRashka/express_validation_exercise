@@ -25,12 +25,6 @@ router.post('/', function(req, res) {
     }
 });
 
-
-
-
-
-
-
 function checkPost(req) {
     var info = {};
     info.hasError = false;

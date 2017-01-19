@@ -2,11 +2,9 @@
 
 const express = require('express');
 const router = express.Router();
-const Joi = require('joi');
-const validations = require('../validations/signup');
+//const Joi = require('joi');
+//const validations = require('../validations/signup');
 const ev = require('express-validation');
-
-// Write your form and validations inside this route file.
 
 router.get('/', function(req, res) {
     res.render('signup', {
@@ -20,46 +18,75 @@ router.get('/', function(req, res) {
     });
 });
 
-router.post('/', ev(validations.post), (req, res, next) => {
-    req.body;
-    //console.log("wtf");
-    let postInfo = checkPost(req);
+router.post('/', function(req, res) {
+    let signInfo = checkSignIn(req);
     // Handle rendering / redirecting here.
     // If there arent any validation errors, redirect to '/'
-    if (!postInfo.hasError) {
+    if (!signInfo.hasError) {
         res.redirect('/');
     } else {
-        res.render('signup', postInfo);
+        res.render('signup', signInfo);
     }
 });
-
-//If there are validation errors, re-render the signup page, injecting the users previous inputs.
-//res.render('signup', req.post);
-
-// var postInfo = checkPost(req); // Run error checking.
-//
-// if (!postInfo.hasError) {
-//     // Validations passed -- Submit into database and redirect.
-//     res.redirect('/');
-// } else {
-//     res.render('add_post', postInfo);
-// }
-// });
-
-function checkPost(req) {
+//function to rule all functions
+function checkSignIn(req) {
     var info = {};
     info.hasError = false;
     info.error = {};
 
     //Required Checks
-    checkRequired(info, req);
-
-    //Email Check
+    checkUsername(info, req);
     checkEmail(info, req);
+    checkPasswordLength(info, req);
+    checkPhone(info, req);
+    checkRequired(info, req);
 
     return info;
 }
 
+function checkUsername(info, req) {
+    let username = req.body.username;
+    let start = /^[A-Za-z]/;
+    // Username: Required. Must be more than 6 characters
+    if (username.length > 6) {
+        // info.username = req.body.username;
+    } else {
+        if (!info.error.username) {
+            info.error.username = [];
+        }
+        info.hasError = true;
+        info.error.username.push({
+            message: "username must be more than 6 characters"
+        });
+    }
+    //console.log(req.body.username);
+    // // Username: must start with a letter,
+    if (username.match(start)) {
+        return true;
+    } else {
+        if (!info.error.username) {
+            info.error.username = [];
+        }
+        info.hasError = true;
+        info.error.username.push({
+            message: "username must start with a letter"
+        });
+    }
+    // //Username: no punctuation.
+    if (username.match(/^\w+$/)) {
+        return true;
+    } else {
+        if (!info.error.username) {
+            infor.error.username = [];
+        }
+        info.hasError = true;
+        info.error.username.push({
+            message: "username must NOT contain punctuation"
+        })
+    }
+}
+
+// Email: Required. Must be formatted like an email, (something @ something . something)
 function checkEmail(info, req) {
     var str = req.body.email;
     var atFound = false;
@@ -83,10 +110,46 @@ function checkEmail(info, req) {
         }
         info.hasError = true;
         info.error.email.push({
-            message: "email is malformed."
+            message: "please insert a valid email"
         });
     }
 }
+// Password: Required. Must be more than 8 characters with atleast One letter, one number, and one special character (!?/.,')
+function checkPasswordLength(info, req) {
+    let password = req.body.password;
+    if (password.length > 8) {
+
+    } else {
+        if (!info.error.password) {
+            info.error.password = [];
+        }
+        info.hasError = true;
+        info.error.password.push({
+            message: "password must be 8 characters long"
+        });
+    }
+}
+
+
+// Phone Number: Required. Must be a 10 digit number formatted like: 999-888-9898
+function checkPhone(info, req) {
+    var phone = req.body.phoneNumber;
+    console.log(req.body);
+    //let rex = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+    if (phone.match(/^\d{3}\-?\d{3}\-?\d{4}$/)) {
+        info.phone = req.body.phoneNumber;
+    } else {
+        if (!info.error.phoneNumber) {
+            info.error.phoneNumber = [];
+        }
+        info.hasError = true;
+        info.error.phoneNumber.push({
+            message: "Format as 999-999-9999."
+        })
+    }
+}
+// First Name: Required.
+// Last Name: Required.
 
 function checkRequired(info, req) {
     for (var item in req.body) {
@@ -102,8 +165,4 @@ function checkRequired(info, req) {
         }
     }
 }
-
-// PRO-TIP: Write ALOT of functions to help you handle each little piece.
-
-
 module.exports = router;
